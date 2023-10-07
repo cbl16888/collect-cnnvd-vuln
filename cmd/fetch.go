@@ -256,7 +256,7 @@ func getVulnInfo(cnnvdId *cnnvd.CNNVD) (int, string) {
 	latestCnnvdId := meta.OldestCnnvdId
 	latestCnnvd, _ := cnnvd.NewCNNVD(latestCnnvdId)
 	for i := 1; i <= loopNum; i++ {
-		reqList = cnnvd.ReqVulList{PageIndex: 1, PageSize: cnnvd.MaxPageSize, Keyword: keyword}
+		reqList = cnnvd.ReqVulList{PageIndex: i, PageSize: cnnvd.MaxPageSize, Keyword: keyword}
 		vulns, err = reqList.Fetch(Retry)
 		if err != nil {
 			log.Fatal().Interface("request", reqList).Msgf("failed to get vuln list:%w", err)

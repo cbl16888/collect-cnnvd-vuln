@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+
 	"github.com/cheggaaa/pb"
 	"github.com/olekukonko/tablewriter"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
 	"github.com/y4ney/collect-cnnvd-vuln/internal/cnnvd"
 	"github.com/y4ney/collect-cnnvd-vuln/internal/utils"
-	"os"
 )
 
 const (
@@ -27,6 +28,7 @@ var (
 	HazardLevel string
 	Product     string
 	Vendor      string
+	VulName     string
 )
 
 var (
@@ -47,6 +49,7 @@ func init() {
 	searchCmd.Flags().IntVar(&PageSize, "page-size", cnnvd.MaxPageSize, "指定页数大小 仅在 --type=vuln 时有效")
 	searchCmd.Flags().StringVar(&HazardLevel, "hazard-level", "", "指定威胁等级，仅支持 超危、高危、中危和低危, 仅在 --type=vuln 时有效")
 	// TODO 优化
+	searchCmd.Flags().StringVar(&VulName, "vul-name", "Oracle MySQL", "指定商品编号，仅在 --type=vuln 时有效，请先通过 --type=product 来获取商品编号")
 	searchCmd.Flags().StringVar(&Product, "product", "", "指定商品编号，仅在 --type=vuln 时有效，请先通过 --type=product 来获取商品编号")
 	searchCmd.Flags().StringVar(&Vendor, "vendor", "", "指定供应商编号，仅在 --type=vuln 时有效，请先通过 --type=vendor 获取供应商编号 ")
 	utils.BindFlags(searchCmd)
@@ -110,6 +113,7 @@ func searchVuln() {
 		HazardLevel: level[HazardLevel],
 		Vendor:      Vendor,
 		Product:     Product,
+		VulName:     VulName,
 	}
 	vulns, err := c.Fetch(Retry)
 	if err != nil {
@@ -125,6 +129,7 @@ func searchVuln() {
 	}
 	bar := pb.StartNew(len(vulns))
 	var data [][]string
+	var customData [][]string
 	for _, vuln := range vulns {
 		detailC := cnnvd.ReqVulDetail{Id: vuln.Id, VulType: vuln.VulType, CnnvdCode: vuln.CnnvdCode}
 		detail, err := detailC.Fetch(Retry)
@@ -136,11 +141,21 @@ func searchVuln() {
 		}
 		data = append(data, []string{severity[detail.HazardLevel], detail.CnnvdCode, detail.CveCode, detail.VulName,
 			detail.VulTypeName, detail.AffectedVendor, detail.AffectedProduct, detail.UpdateTime})
+		customData = append(customData, []string{detail.VulName, detail.CnnvdCode, detail.CveCode,
+			detail.VulDesc, "已修复：" + detail.Patch, severity[detail.HazardLevel], "", detail.VulType})
+		// fmt.Println(detail)
 		bar.Increment()
 	}
 	bar.Finish()
-	printInfo([]string{"SEVERITY", "CNNVD ID", "CVE ID", "NAME", "TYPE", "VENDOR", "PRODUCT", "UPDATE TIME"}, data)
-
+	// printInfo([]string{"SEVERITY", "CNNVD ID", "CVE ID", "NAME", "TYPE", "VENDOR", "PRODUCT", "UPDATE TIME"}, data)
+	var index = 0
+	for _, row := range customData {
+		fmt.Println("---------------" + fmt.Sprint(index) + "---------------")
+		for _, cell := range row {
+			fmt.Println(cell)
+		}
+		index += 1
+	}
 }
 
 func printInfo(header []string, data [][]string) {

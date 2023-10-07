@@ -3,7 +3,7 @@ module github.com/y4ney/collect-cnnvd-vuln
 go 1.20
 
 require (
-	cloud.google.com/go/compute/metadata v0.2.3
+	cloud.google.com/go/compute/metadata v0.2.3 // indirect
 	github.com/aquasecurity/trivy v0.43.1
 	github.com/aquasecurity/trivy-db v0.0.0-20230703082116-dc52e83376ce
 	github.com/cheggaaa/pb v1.0.29
@@ -18,7 +18,7 @@ require (
 	golang.org/x/term v0.9.0
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2
 	gopkg.in/src-d/go-git.v4 v4.13.1
-	gopkg.in/yaml.v3 v3.0.1
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
 require (

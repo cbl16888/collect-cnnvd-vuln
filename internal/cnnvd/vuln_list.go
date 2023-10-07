@@ -21,6 +21,7 @@ type ReqVulList struct {
 	Keyword     string `json:"keyword"`     // 关键字
 	HazardLevel string `json:"hazardLevel"` // 漏洞等级
 	VulType     string `json:"vulType"`     // 漏洞类型
+	VulName     string `json:"vulName"`     // 漏洞名称
 	Vendor      string `json:"vendor"`      // 供应商
 	Product     string `json:"product"`     // 产品
 	DateType    string `json:"dateType"`    // 数据类型
