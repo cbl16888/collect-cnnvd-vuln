@@ -49,7 +49,7 @@ func init() {
 	searchCmd.Flags().IntVar(&PageSize, "page-size", cnnvd.MaxPageSize, "指定页数大小 仅在 --type=vuln 时有效")
 	searchCmd.Flags().StringVar(&HazardLevel, "hazard-level", "", "指定威胁等级，仅支持 超危、高危、中危和低危, 仅在 --type=vuln 时有效")
 	// TODO 优化
-	searchCmd.Flags().StringVar(&VulName, "vul-name", "Oracle MySQL", "指定商品编号，仅在 --type=vuln 时有效，请先通过 --type=product 来获取商品编号")
+	searchCmd.Flags().StringVar(&VulName, "vul-name", "", "指定商品编号，仅在 --type=vuln 时有效，请先通过 --type=product 来获取商品编号")
 	searchCmd.Flags().StringVar(&Product, "product", "", "指定商品编号，仅在 --type=vuln 时有效，请先通过 --type=product 来获取商品编号")
 	searchCmd.Flags().StringVar(&Vendor, "vendor", "", "指定供应商编号，仅在 --type=vuln 时有效，请先通过 --type=vendor 获取供应商编号 ")
 	utils.BindFlags(searchCmd)
